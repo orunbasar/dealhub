@@ -6,56 +6,72 @@ export default async function Home() {
     .select("*");
 
   return (
-    <main style={{ padding: "40px", maxWidth: "1200px", margin: "0 auto" }}>
-      <h1>DealHub</h1>
+    <main className="min-h-screen bg-zinc-950 text-white">
+      <div className="mx-auto max-w-7xl p-8">
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-          gap: "24px",
-          marginTop: "30px",
-        }}
-      >
-        {products?.map((product) => (
-          <div
-            key={product.id}
-            style={{
-              border: "1px solid #ddd",
-              borderRadius: 12,
-              padding: 16,
-            }}
-          >
-            <img
-              src={product.image}
-              alt={product.title}
-              style={{
-                width: "100%",
-                height: 220,
-                objectFit: "cover",
-                borderRadius: 8,
-              }}
-            />
+        <h1 className="text-4xl font-bold mb-8">
+          🔥 DealHub
+        </h1>
 
-            <h2>{product.title}</h2>
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {products?.map((product) => {
+            const discount = Math.round(
+              ((product.old_price - product.price) /
+                product.old_price) *
+                100
+            );
 
-            <p>{product.description}</p>
+            return (
+              <div
+                key={product.id}
+                className="overflow-hidden rounded-2xl bg-zinc-900 shadow-lg transition hover:scale-[1.02]"
+              >
+                <img
+                  src={product.image}
+                  alt={product.title}
+                  className="h-64 w-full object-cover"
+                />
 
-            <p>
-              <del>${product.old_price}</del>
-            </p>
+                <div className="p-4">
 
-            <h3>${product.price}</h3>
+                  <span className="rounded bg-red-600 px-2 py-1 text-sm">
+                    -{discount}%
+                  </span>
 
-            <a
-              href={product.deeplink}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Купить
-            </a>
-          </div>
-        ))}
+                  <h2 className="mt-3 text-lg font-semibold">
+                    {product.title}
+                  </h2>
+
+                  <p className="mt-2 text-sm text-zinc-400 line-clamp-3">
+                    {product.description}
+                  </p>
+
+                  <div className="mt-4 flex items-center gap-3">
+
+                    <span className="text-2xl font-bold text-green-400">
+                      ${product.price}
+                    </span>
+
+                    <span className="text-zinc-500 line-through">
+                      ${product.old_price}
+                    </span>
+
+                  </div>
+
+                  <a
+                    href={product.deeplink}
+                    target="_blank"
+                    className="mt-5 block rounded-lg bg-blue-600 py-3 text-center font-medium transition hover:bg-blue-500"
+                  >
+                    Купить →
+                  </a>
+
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
       </div>
     </main>
   );
