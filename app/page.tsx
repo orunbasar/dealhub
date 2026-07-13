@@ -1,30 +1,47 @@
+import Header from "@/components/Header";
 import { supabase } from "@/lib/supabase";
+import { Product } from "@/types/product";
 
 export default async function Home() {
-  const { data: products } = await supabase
+  const { data: products, error } = await supabase
     .from("products")
     .select("*");
 
-  return (
-    <main className="min-h-screen bg-zinc-950 text-white">
-      <div className="mx-auto max-w-7xl p-8">
+  if (error) {
+    return (
+      <>
+        <Header />
 
-        <h1 className="text-4xl font-bold mb-8">
-          🔥 DealHub
-        </h1>
+        <main className="mx-auto max-w-7xl p-8 text-red-500">
+          <h2>Ошибка загрузки товаров</h2>
+          <pre>{JSON.stringify(error, null, 2)}</pre>
+        </main>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <Header />
+
+      <main className="mx-auto max-w-7xl p-8">
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {products?.map((product) => {
-            const discount = Math.round(
-              ((product.old_price - product.price) /
-                product.old_price) *
-                100
-            );
+
+          {products?.map((product: Product) => {
+            const discount =
+              product.old_price > 0
+                ? Math.round(
+                    ((product.old_price - product.price) /
+                      product.old_price) *
+                      100
+                  )
+                : 0;
 
             return (
               <div
                 key={product.id}
-                className="overflow-hidden rounded-2xl bg-zinc-900 shadow-lg transition hover:scale-[1.02]"
+                className="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900 shadow-lg transition hover:scale-[1.02]"
               >
                 <img
                   src={product.image}
@@ -34,15 +51,15 @@ export default async function Home() {
 
                 <div className="p-4">
 
-                  <span className="rounded bg-red-600 px-2 py-1 text-sm">
+                  <span className="rounded bg-red-600 px-2 py-1 text-sm text-white">
                     -{discount}%
                   </span>
 
-                  <h2 className="mt-3 text-lg font-semibold">
+                  <h2 className="mt-3 line-clamp-2 text-lg font-semibold text-white">
                     {product.title}
                   </h2>
 
-                  <p className="mt-2 text-sm text-zinc-400 line-clamp-3">
+                  <p className="mt-2 line-clamp-3 text-sm text-zinc-400">
                     {product.description}
                   </p>
 
@@ -61,7 +78,8 @@ export default async function Home() {
                   <a
                     href={product.deeplink}
                     target="_blank"
-                    className="mt-5 block rounded-lg bg-blue-600 py-3 text-center font-medium transition hover:bg-blue-500"
+                    rel="noopener noreferrer"
+                    className="mt-5 block rounded-lg bg-blue-600 py-3 text-center font-medium text-white transition hover:bg-blue-500"
                   >
                     Купить →
                   </a>
@@ -70,9 +88,12 @@ export default async function Home() {
               </div>
             );
           })}
+
         </div>
 
-      </div>
-    </main>
+      </main>
+    </>
   );
-}
+}git add .
+git commit -m "Marketplace layout"
+git push
