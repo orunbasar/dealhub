@@ -94,6 +94,3 @@ export default async function Home() {
       </main>
     </>
   );
-}git add .
-git commit -m "Marketplace layout"
-git push
