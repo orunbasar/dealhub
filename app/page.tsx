@@ -18,4 +18,4 @@ export default async function Home() {
   const products: Product[] = data ?? [];
 
   return <AppClient products={products} />;
-}rm result.txt
+}
